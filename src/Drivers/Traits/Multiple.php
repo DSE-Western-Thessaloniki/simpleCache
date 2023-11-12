@@ -2,7 +2,7 @@
 
 namespace Dsewth\SimpleCache\Drivers\Traits;
 
-use Psr\SimpleCache\InvalidArgumentException;
+use Dsewth\SimpleCache\Exceptions\InvalidArgumentException;
 
 trait Multiple {
 	public function getMultiple($keys, $default = null) {
