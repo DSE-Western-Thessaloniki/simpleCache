@@ -17,10 +17,6 @@ abstract class Driver implements DriverInterface {
 	 * @return bool 
 	 */
 	public function isValidKey(string $key): bool {
-		if (!is_string($key)) {
-			return false;
-		}
-
 		$chars = array('{', '}', '(', ')', '/', '\\', '@');
 		return !strpbrk($key, implode($chars));
 	}
