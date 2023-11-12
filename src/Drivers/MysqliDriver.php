@@ -4,8 +4,8 @@ namespace Dsewth\SimpleCache\Drivers;
 
 use Carbon\Carbon;
 use Dsewth\SimpleCache\Drivers\Traits\Multiple;
-use Psr\SimpleCache\InvalidArgumentException;
-use Psr\SimpleCache\CacheException;
+use Dsewth\SimpleCache\Exceptions\CacheException;
+use Dsewth\SimpleCache\Exceptions\InvalidArgumentException;
 
 class MysqliDriver extends Driver {
 	use Multiple;

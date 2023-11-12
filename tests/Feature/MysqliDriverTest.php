@@ -1,10 +1,9 @@
 <?php
 
 use Carbon\Carbon;
-use Dsewth\SimpleCache\Drivers\MemoryDriver;
 use Dsewth\SimpleCache\Drivers\MysqliDriver;
 use Dsewth\SimpleCache\Cache;
-use Psr\SimpleCache\InvalidArgumentException;
+use Dsewth\SimpleCache\Exceptions\InvalidArgumentException;
 use Symfony\Component\Dotenv\Dotenv;
 
 beforeEach(function() {
