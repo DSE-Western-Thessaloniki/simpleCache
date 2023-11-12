@@ -1,9 +1,9 @@
 <?php
 
-use Dsewth\SimpleCache\Drivers\MemoryDriver;
-use Dsewth\SimpleCache\Cache;
-use Psr\SimpleCache\InvalidArgumentException;
 use Carbon\Carbon;
+use Dsewth\SimpleCache\Cache;
+use Dsewth\SimpleCache\Drivers\MemoryDriver;
+use Dsewth\SimpleCache\Exceptions\InvalidArgumentException;
 
 it('can create a new cache in memory', function () {
     $cache = new Cache(new MemoryDriver());
@@ -41,6 +41,21 @@ it('removes expired keys', function () {
     $cache->set('test', 'value', 60);
     expect($cache->getDriver()->getKeys())->toHaveCount(1);
     Carbon::setTestNow(new Carbon("+1 hour"));
+    // Πρέπει να ζητήσουμε το κλειδί για να ελεγχθεί αν έχει λήξει
+    $cache->get('test');
+    expect($cache->getDriver()->getKeys())->toHaveCount(0);
+    Carbon::setTestNow();
+
+    // Κάνε έλεγχο με το default ttl
+    expect($cache->getDriver()->getDefaultTtl())->toBe(MemoryDriver::DEFAULT_TTL);
+    $cache->getDriver()->setDefaultTtl(60);
+    expect($cache->getDriver()->getDefaultTtl())->toBe(60);
+    expect($cache->getDriver()->getKeys())->toHaveCount(0);
+    Carbon::setTestNow(Carbon::now());
+    $cache->set('test', 'value');
+    expect($cache->getDriver()->getKeys())->toHaveCount(1);
+    Carbon::setTestNow(new Carbon("+1 hour"));
+    // Πρέπει να ζητήσουμε το κλειδί για να ελεγχθεί αν έχει λήξει
     $cache->get('test');
     expect($cache->getDriver()->getKeys())->toHaveCount(0);
     Carbon::setTestNow();
@@ -61,6 +76,9 @@ it('accepts int and DateTimeInterval as ttl', function () {
     $cache->get('test');
     expect($cache->getDriver()->getKeys())->toHaveCount(0);
     Carbon::setTestNow();
+
+    // Αν περάσουμε κάτι άλλο θα πρέπει να πετάξει εξαίρεση
+    expect(fn() => $cache->set('test', 'value', "invalid value"))->toThrow(InvalidArgumentException::class);
 });
 
 it('can clear the cache', function () {
@@ -121,6 +139,8 @@ it('throws an exception if you give an invalid key', function () {
     $cache = new Cache(new MemoryDriver());
     expect(fn() => $cache->set('test{1}', 'value'))
         ->toThrow(InvalidArgumentException::class);
+    expect(fn() => $cache->getDriver()->getExpirationTimestamp('test{1}'))
+        ->toThrow(InvalidArgumentException::class);
     $values = array();
     for ($i = 0; $i < 100; $i++) {
         $values["test($i)"] = $i;
@@ -166,4 +186,7 @@ it('returns the ttl when requested', function () {
     $cache = new Cache(new MemoryDriver());
     $cache->set('test', 'value', 10);
     expect($cache->getDriver()->getExpirationTimestamp('test'))->toBeInt();
+
+    // Αν το κλειδί δεν υπάρχει πρέπει να επιστρέφει μηδέν
+    expect($cache->getDriver()->getExpirationTimestamp('test2'))->toBe(0);
 });
