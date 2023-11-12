@@ -6,10 +6,6 @@ abstract class Driver implements DriverInterface {
 	protected string $name;
 	protected int $ttl;
 
-	/**
-	 * Return the name of the driver.
-	 *  @return string
-	 */
 	public function getName(): string {
 		return $this->name;
 	}
@@ -26,14 +22,7 @@ abstract class Driver implements DriverInterface {
 		}
 
 		$chars = array('{', '}', '(', ')', '/', '\\', '@');
-
-		foreach ($chars as $char) {
-			if (strpos($key, $char) !== false) {
-				return false;
-			}
-		}
-
-		return true;
+		return !strpbrk($key, implode($chars));
 	}
 
 	public function setDefaultTtl(int $ttl): void {
