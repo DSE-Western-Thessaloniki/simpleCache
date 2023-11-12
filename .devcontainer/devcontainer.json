@@ -17,7 +17,6 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ikappas.composer",
 				"streetsidesoftware.code-spell-checker",
 				"mhutchie.git-graph",
 				"GitHub.vscode-pull-request-github",
@@ -30,7 +29,8 @@
 				"MehediDracula.php-namespace-resolver",
 				"SonarSource.sonarlint-vscode",
 				"TabNine.tabnine-vscode",
-				"albert.TabOut"
+				"albert.TabOut",
+				"DEVSENSE.composer-php-vscode"
 			]
 		}
 	}
