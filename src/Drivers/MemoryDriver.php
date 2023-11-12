@@ -2,9 +2,9 @@
 
 namespace Dsewth\SimpleCache\Drivers;
 
-use Dsewth\SimpleCache\Drivers\Traits\Multiple;
-use Psr\SimpleCache\InvalidArgumentException;
 use Carbon\Carbon;
+use Dsewth\SimpleCache\Drivers\Traits\Multiple;
+use Dsewth\SimpleCache\Exceptions\InvalidArgumentException;
 
 class MemoryDriver extends Driver {
 	use Multiple;
