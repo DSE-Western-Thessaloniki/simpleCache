@@ -99,6 +99,9 @@ it('accepts int and DateTimeInterval as ttl', function () {
     $cache->get('test');
     expect($cache->getDriver()->getKeys())->toHaveCount(0);
     Carbon::setTestNow();
+
+    // Αν περάσουμε κάτι άλλο θα πρέπει να πετάξει εξαίρεση
+    expect(fn() => $cache->set('test', 'value', "invalid value"))->toThrow(InvalidArgumentException::class);
 });
 
 it('can clear the cache', function () {
@@ -159,6 +162,8 @@ it('throws an exception if you give an invalid key', function () {
     $cache = new Cache(new MysqliDriver($this->mysqli));
     expect(fn() => $cache->set('test{1}', 'value'))
         ->toThrow(InvalidArgumentException::class);
+    expect(fn() => $cache->getDriver()->getExpirationTimestamp('test{1}'))
+        ->toThrow(InvalidArgumentException::class);
     $values = array();
     for ($i = 0; $i < 100; $i++) {
         $values["test($i)"] = $i;
@@ -204,4 +209,7 @@ it('returns the ttl when requested', function () {
     $cache = new Cache(new MysqliDriver($this->mysqli));
     $cache->set('test', 'value', 10);
     expect($cache->getDriver()->getExpirationTimestamp('test'))->toBeInt();
+
+    // Αν το κλειδί δεν υπάρχει πρέπει να επιστρέφει μηδέν
+    expect($cache->getDriver()->getExpirationTimestamp('test2'))->toBe(0);
 });
